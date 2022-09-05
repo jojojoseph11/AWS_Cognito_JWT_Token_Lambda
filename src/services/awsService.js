@@ -19,15 +19,3 @@ module.exports.getImageObject = async (imageName) => {
 module.exports.listImageObject = async (paramsData) => {
     return await s3.listObjects(paramsData).promise();
 };
-
-module.exports.deleteImageObject = async (paramsData) => {
-    return await s3.deleteObject(paramsData).promise();
-};
-
-module.exports.getImageUrlObject = async (paramsData) => {
-    return await s3.getSignedUrl('getObject', paramsData);
-};
-
-module.exports.changeImagePermissions = async (paramsData) => {
-    return await s3.putObjectAcl(paramsData).promise();
-};
