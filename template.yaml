@@ -1,0 +1,434 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: 'AWS::Serverless-2016-10-31'
+Description: "Creates lambda, Api gateway and DynamoDB"
+Resources:
+  dynamoDbTableJWTTrainingCognito:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: dynamoDbTableTrainingCognito
+      AttributeDefinitions:
+      - AttributeName: "fileName"
+        AttributeType: "S"
+      KeySchema:
+      - AttributeName: "fileName"
+        KeyType: HASH
+      ProvisionedThroughput:
+        ReadCapacityUnits: 5
+        WriteCapacityUnits: 5
+  s3ImageBucketRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Statement:
+        - Action: 'sts:AssumeRole'
+          Effect: Allow
+          Principal:
+            Service:
+            - lambda.amazonaws.com
+      RoleName: get-Image-Role
+      Policies:
+      - PolicyName: get-Image-Policies
+        PolicyDocument: 
+          Version: 2012-10-17
+          Statement:
+          - Action:
+            - s3:GetObject
+            - s3:GetObjectAcl
+            - s3:ListBucket
+            - s3:PutObject
+            - s3:PutObjectAcl
+            - s3:DeleteObject
+            - dynamodb:BatchWriteItem
+            - dynamodb:GetItem
+            - dynamodb:Scan
+            - dynamodb:PutItem
+            - dynamodb:DeleteItem
+            - dynamodb:UpdateItem
+            - 'logs:*'
+            Resource:
+            - '*'
+            - "arn:aws:s3:::*"
+            - "arn:aws:dynamodb:::*"
+            Effect: Allow
+  userRegisterRoleImageManager:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Statement:
+        - Action: 'sts:AssumeRole'
+          Effect: Allow
+          Principal:
+            Service:
+            - lambda.amazonaws.com
+      RoleName: userRegisterRoleImageManager
+      Policies:
+      - PolicyName: test-LambdaCapabilitiesPolicies
+        PolicyDocument:
+          Version: 2012-10-17
+          Statement:
+          - Action:
+            - 'logs:*'
+            Resource:
+            - '*'
+            Effect: Allow
+  uploadImage:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: .
+      Handler: src/handlers/userHandler.uploadImage
+      Runtime: nodejs12.x
+      FunctionName: uploadImageFunction
+      Role: !GetAtt
+      - s3ImageBucketRole
+      - Arn
+      Events:
+        ApiEvent:
+          Type: Api
+          Properties:
+            Path: /uploadImage
+            Method: post
+      Environment:
+        Variables:
+          AWS_BUCKET_NAME: "factweavers-aws-training-s3-bucket-jojo"
+          REGION: "us-east-1"
+          AWS_S3_ACCESS_KEY_ID: "your access key"
+          AWS_S3_SECRET_ACCESS_KEY: "your secert  key"
+  getImage:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: .
+      Handler: src/handlers/userHandler.getImage
+      Runtime: nodejs12.x
+      FunctionName: getImageFunction
+      Role: !GetAtt
+      - s3ImageBucketRole
+      - Arn
+      Events:
+        ApiEvent:
+          Type: Api
+          Properties:
+            Path: /getImage
+            Method: GET
+      Environment:
+        Variables:
+          AWS_BUCKET_NAME: "factweavers-aws-training-s3-bucket-jojo"
+          REGION: "us-east-1"
+          AWS_S3_ACCESS_KEY_ID: "your access key"
+          AWS_S3_SECRET_ACCESS_KEY: "your secert  key"
+  listImages:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: .
+      Handler: src/handlers/userHandler.listImages
+      Runtime: nodejs12.x
+      FunctionName: listImagesFunction
+      Role: !GetAtt
+      - s3ImageBucketRole
+      - Arn
+      Events:
+        ApiEvent:
+          Type: Api
+          Properties:
+            Path: /listImages
+            Method: GET
+      Environment:
+        Variables:
+          AWS_BUCKET_NAME: "factweavers-aws-training-s3-bucket-jojo"
+          REGION: "us-east-1"
+          AWS_S3_ACCESS_KEY_ID: "your access key"
+          AWS_S3_SECRET_ACCESS_KEY: "your secert  key"
+  updateImage:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: .
+      Handler: src/handlers/userHandler.updateImage
+      Runtime: nodejs12.x
+      FunctionName: updateImageFunction
+      Role: !GetAtt
+      - s3ImageBucketRole
+      - Arn
+      Events:
+        ApiEvent:
+          Type: Api
+          Properties:
+            Path: /updateImage
+            Method: PUT
+      Environment:
+        Variables:
+          AWS_BUCKET_NAME: "factweavers-aws-training-s3-bucket-jojo"
+          REGION: "us-east-1"
+          AWS_S3_ACCESS_KEY_ID: "your access key"
+          AWS_S3_SECRET_ACCESS_KEY: "your secert  key"
+  deleteImage:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: .
+      Handler: src/handlers/userHandler.deleteImage
+      Runtime: nodejs12.x
+      FunctionName: deleteImageFunction
+      Role: !GetAtt
+      - s3ImageBucketRole
+      - Arn
+      Events:
+        ApiEvent:
+          Type: Api
+          Properties:
+            Path: /deleteImage
+            Method: DELETE
+      Environment:
+        Variables:
+          AWS_BUCKET_NAME: "factweavers-aws-training-s3-bucket-jojo"
+          REGION: "us-east-1"
+          AWS_S3_ACCESS_KEY_ID: "your access key"
+          AWS_S3_SECRET_ACCESS_KEY: "your secert  key"
+  getImageUrl:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: .
+      Handler: src/handlers/userHandler.getImageUrl
+      Runtime: nodejs12.x
+      FunctionName: getImageUrlFunction
+      Role: !GetAtt
+      - s3ImageBucketRole
+      - Arn
+      Events:
+        ApiEvent:
+          Type: Api
+          Properties:
+            Path: /getImageUrl
+            Method: GET
+      Environment:
+        Variables:
+          AWS_BUCKET_NAME: "factweavers-aws-training-s3-bucket-jojo"
+          REGION: "us-east-1"
+          AWS_S3_ACCESS_KEY_ID: "your access key"
+          AWS_S3_SECRET_ACCESS_KEY: "your secert  key"
+  changeImagePermissions:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: .
+      Handler: src/handlers/userHandler.changePermissions
+      Runtime: nodejs12.x
+      FunctionName: changeImagePermissionsFunction
+      Role: !GetAtt
+      - s3ImageBucketRole
+      - Arn
+      Events:
+        ApiEvent:
+          Type: Api
+          Properties:
+            Path: /changePermissions
+            Method: PUT
+      Environment:
+        Variables:
+          AWS_BUCKET_NAME: "factweavers-aws-training-s3-bucket-jojo"
+          REGION: "us-east-1"
+          AWS_S3_ACCESS_KEY_ID: "your access key"
+          AWS_S3_SECRET_ACCESS_KEY: "your secert  key"
+  updateImageMetaData:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: .
+      Handler: src/handlers/userHandler.updateMetaData
+      Runtime: nodejs12.x
+      FunctionName: updateImageMetadataFunction
+      Role: !GetAtt
+      - s3ImageBucketRole
+      - Arn
+      Events:
+        ApiEvent:
+          Type: Api
+          Properties:
+            Path: /updateMetaData
+            Method: PUT
+      Environment:
+        Variables:
+          AWS_BUCKET_NAME: "factweavers-aws-training-s3-bucket-jojo"
+          REGION: "us-east-1"
+          AWS_S3_ACCESS_KEY_ID: "your access key"
+          AWS_S3_SECRET_ACCESS_KEY: "your secert  key"
+  bulkSaveImageMetaData:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: .
+      Handler: src/handlers/userHandler.bulkSaveMetaData
+      Runtime: nodejs12.x
+      FunctionName: bulkSaveImageMetadataFunction
+      Role: !GetAtt
+      - s3ImageBucketRole
+      - Arn
+      Events:
+        ApiEvent:
+          Type: Api
+          Properties:
+            Path: /bulkSaveMetaData
+            Method: POST
+      Environment:
+        Variables:
+          AWS_BUCKET_NAME: "factweavers-aws-training-s3-bucket-jojo"
+          REGION: "us-east-1"
+          AWS_S3_ACCESS_KEY_ID: "your access key"
+          AWS_S3_SECRET_ACCESS_KEY: "your secert  key"
+  bulkUpdateImageMetaData:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: .
+      Handler: src/handlers/userHandler.bulkUpdateMetaData
+      Runtime: nodejs12.x
+      FunctionName: bulkUpdateImageMetadataFunction
+      Role: !GetAtt
+      - s3ImageBucketRole
+      - Arn
+      Events:
+        ApiEvent:
+          Type: Api
+          Properties:
+            Path: /bulkUpdateMetaData
+            Method: PUT
+      Environment:
+        Variables:
+          AWS_BUCKET_NAME: "factweavers-aws-training-s3-bucket-jojo"
+          REGION: "us-east-1"
+          AWS_S3_ACCESS_KEY_ID: "your access key"
+          AWS_S3_SECRET_ACCESS_KEY: "your secert  key"
+  bulkDeleteImageMetaData:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: .
+      Handler: src/handlers/userHandler.bulkDeleteMetaData
+      Runtime: nodejs12.x
+      FunctionName: bulkDeleteImageMetadataFunction
+      Role: !GetAtt
+      - s3ImageBucketRole
+      - Arn
+      Events:
+        ApiEvent:
+          Type: Api
+          Properties:
+            Path: /bulkDeleteMetaData
+            Method: DELETE
+      Environment:
+        Variables:
+          AWS_BUCKET_NAME: "factweavers-aws-training-s3-bucket-jojo"
+          REGION: "us-east-1"
+          AWS_S3_ACCESS_KEY_ID: "your access key"
+          AWS_S3_SECRET_ACCESS_KEY: "your secert  key"
+  createUserImageManager:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: .
+      Handler: src/handlers/userHandler.createUser
+      Runtime: nodejs12.x
+      FunctionName: createUserImageManagerFunction
+      Role: !GetAtt
+      - userRegisterRoleImageManager
+      - Arn
+      Events:
+        ApiEvent:
+          Type: Api
+          Properties:
+            Path: /createUser
+            Method: POST
+      Environment:
+        Variables:
+          AWS_BUCKET_NAME: "factweavers-aws-training-s3-bucket-jojo"
+          REGION: "us-east-1"
+          AWS_S3_ACCESS_KEY_ID: "your access key"
+          AWS_S3_SECRET_ACCESS_KEY: "your secert  key"
+  userLoginImageManager:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: .
+      Handler: src/handlers/userHandler.userLogin
+      Runtime: nodejs12.x
+      MemorySize: 512
+      Timeout: 5
+      FunctionName: userLoginImageManagerFunction
+      Role: !GetAtt
+      - userRegisterRoleImageManager
+      - Arn
+      Events:
+        ApiEvent:
+          Type: Api
+          Properties:
+            Path: /userLogin
+            Method: POST
+      Environment:
+        Variables:
+          AWS_BUCKET_NAME: "factweavers-aws-training-s3-bucket-jojo"
+          REGION: "us-east-1"
+          AWS_S3_ACCESS_KEY_ID: "your access key"
+          AWS_S3_SECRET_ACCESS_KEY: "your secert  key"
+  forgotPasswordImageManager:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: .
+      Handler: src/handlers/userHandler.forgotPassword
+      Runtime: nodejs12.x
+      MemorySize: 512
+      Timeout: 5
+      FunctionName: forgotPasswordImageManagerFunction
+      Role: !GetAtt
+      - userRegisterRoleImageManager
+      - Arn
+      Events:
+        ApiEvent:
+          Type: Api
+          Properties:
+            Path: /forgotPassword
+            Method: POST
+      Environment:
+        Variables:
+          AWS_BUCKET_NAME: "factweavers-aws-training-s3-bucket-jojo"
+          REGION: "us-east-1"
+          AWS_S3_ACCESS_KEY_ID: "your access key"
+          AWS_S3_SECRET_ACCESS_KEY: "your secert  key"
+  confirmPasswordImageManager:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: .
+      Handler: src/handlers/userHandler.confirmPassword
+      Runtime: nodejs12.x
+      MemorySize: 512
+      Timeout: 5
+      FunctionName: confirmPasswordImageManagerFunction
+      Role: !GetAtt
+      - userRegisterRoleImageManager
+      - Arn
+      Events:
+        ApiEvent:
+          Type: Api
+          Properties:
+            Path: /confirmPassword
+            Method: POST
+      Environment:
+        Variables:
+          AWS_BUCKET_NAME: "factweavers-aws-training-s3-bucket-jojo"
+          REGION: "us-east-1"
+          AWS_S3_ACCESS_KEY_ID: "your access key"
+          AWS_S3_SECRET_ACCESS_KEY: "your secert  key"
+  userConfirmRegisterImageManager:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: .
+      Handler: src/handlers/userHandler.userConfirmRegistration
+      Runtime: nodejs12.x
+      MemorySize: 512
+      Timeout: 5
+      FunctionName: userConfirmRegisterImageManagerFunction
+      Role: !GetAtt
+      - userRegisterRoleImageManager
+      - Arn
+      Events:
+        ApiEvent:
+          Type: Api
+          Properties:
+            Path: /confirmUser
+            Method: POST
+      Environment:
+        Variables:
+          AWS_BUCKET_NAME: "factweavers-aws-training-s3-bucket-jojo"
+          REGION: "us-east-1"
+          AWS_S3_ACCESS_KEY_ID: "your access key"
+          AWS_S3_SECRET_ACCESS_KEY: "your secert  key"
+  

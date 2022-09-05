@@ -1,0 +1,35 @@
+{
+  "name": "aws_cognito_jwt_token_lambda",
+  "version": "1.0.0",
+  "description": "JWT Token ",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jojojoseph11/AWS_Cognito_JWT_Token_Lambda.git"
+  },
+  "keywords": [
+    "AWS",
+    "Cognito",
+    "JWT"
+  ],
+  "author": "Jojo Joseph",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/jojojoseph11/AWS_Cognito_JWT_Token_Lambda/issues"
+  },
+  "homepage": "https://github.com/jojojoseph11/AWS_Cognito_JWT_Token_Lambda#readme",
+  "dependencies": {
+    "aws-sdk": "^2.936.0",
+    "dotenv": "^16.0.2",
+    "exif": "^0.6.0",
+    "exif-parser": "^0.1.12",
+    "express": "^4.17.1",
+    "request": "^2.88.2"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.19"
+  }
+}
