@@ -12,7 +12,7 @@ Resources:
           Principal:
             Service:
             - lambda.amazonaws.com
-      RoleName: get-Image-Role
+      RoleName: get-Image-Role-jojo
       Policies:
       - PolicyName: get-Image-Policies
         PolicyDocument: 
@@ -58,8 +58,8 @@ Resources:
       Runtime: nodejs12.x
       FunctionName: uploadImageFunction
       Role: !GetAtt
-      - s3ImageBucketRole
-      - Arn
+        - s3ImageBucketRole
+        - Arn
       Events:
         ApiEvent:
           Type: Api
@@ -80,8 +80,8 @@ Resources:
       Runtime: nodejs12.x
       FunctionName: getImageFunction
       Role: !GetAtt
-      - s3ImageBucketRole
-      - Arn
+        - s3ImageBucketRole
+        - Arn
       Events:
         ApiEvent:
           Type: Api
@@ -102,8 +102,8 @@ Resources:
       Runtime: nodejs12.x
       FunctionName: listImagesFunction
       Role: !GetAtt
-      - s3ImageBucketRole
-      - Arn
+        - s3ImageBucketRole
+        - Arn
       Events:
         ApiEvent:
           Type: Api
@@ -124,8 +124,8 @@ Resources:
       Runtime: nodejs12.x
       FunctionName: createUserImageManagerFunction
       Role: !GetAtt
-      - userRegisterRoleImageManager
-      - Arn
+        - userRegisterRoleImageManager
+        - Arn
       Events:
         ApiEvent:
           Type: Api
@@ -147,8 +147,8 @@ Resources:
       Timeout: 5
       FunctionName: userLoginImageManagerFunction
       Role: !GetAtt
-      - userRegisterRoleImageManager
-      - Arn
+        - userRegisterRoleImageManager
+        - Arn
       Events:
         ApiEvent:
           Type: Api
@@ -170,8 +170,8 @@ Resources:
       Timeout: 5
       FunctionName: forgotPasswordImageManagerFunction
       Role: !GetAtt
-      - userRegisterRoleImageManager
-      - Arn
+        - userRegisterRoleImageManager
+        - Arn
       Events:
         ApiEvent:
           Type: Api
@@ -193,8 +193,8 @@ Resources:
       Timeout: 5
       FunctionName: confirmPasswordImageManagerFunction
       Role: !GetAtt
-      - userRegisterRoleImageManager
-      - Arn
+        - userRegisterRoleImageManager
+        - Arn
       Events:
         ApiEvent:
           Type: Api
@@ -216,8 +216,8 @@ Resources:
       Timeout: 5
       FunctionName: userConfirmRegisterImageManagerFunction
       Role: !GetAtt
-      - userRegisterRoleImageManager
-      - Arn
+        - userRegisterRoleImageManager
+        - Arn
       Events:
         ApiEvent:
           Type: Api

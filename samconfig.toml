@@ -1,0 +1,12 @@
+version = 0.1
+[default]
+[default.deploy]
+[default.deploy.parameters]
+stack_name = "factweavers-training-aws-cognito-jwt"
+s3_bucket = "aws-sam-cli-managed-default-samclisourcebucket-dzr8or3joz7a"
+s3_prefix = "factweavers-training-aws-cognito-jwt"
+region = "ap-south-1"
+confirm_changeset = true
+capabilities = "CAPABILITY_NAMED_IAM"
+disable_rollback = true
+image_repositories = []
