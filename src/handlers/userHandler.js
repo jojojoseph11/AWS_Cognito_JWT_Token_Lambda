@@ -42,9 +42,8 @@ module.exports.listImages = async () => {
 
 // User signup
 module.exports.createUser = async (event) => {
-    console.log(event)
     console.log(event.body);
-    let reqData = event.body;
+    let reqData = JSON.parse(event.body);
     try {
         let results = await cognitoServices.createUserService(reqData);
         return responseHandler.success("User successfully created", results)
