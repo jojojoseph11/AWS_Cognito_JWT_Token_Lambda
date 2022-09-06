@@ -28,7 +28,7 @@ module.exports.createUserService = async (reqData) => {
     }
 };
 
-//confirmRegistration. 
+//confirmRegistration.sam  
 module.exports.userConfirmRegistrationService = async (reqData) => {
     let emailCode = reqData.code;
     let userName = reqData.email;

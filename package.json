@@ -22,6 +22,7 @@
   },
   "homepage": "https://github.com/jojojoseph11/AWS_Cognito_JWT_Token_Lambda#readme",
   "dependencies": {
+    "amazon-cognito-identity-js": "^5.2.10",
     "aws-sdk": "^2.936.0",
     "dotenv": "^16.0.2",
     "exif": "^0.6.0",
