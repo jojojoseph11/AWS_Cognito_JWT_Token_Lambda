@@ -1,6 +1,5 @@
 const amazonCognitoIdentity = require('amazon-cognito-identity-js');
-const constants = require('constants');
-const e = require('express');
+const constants = require('./cognitoConstants');
 
 const poolData = {
     UserPoolId: constants.awsPoolConfig.userPoolId,
@@ -14,8 +13,9 @@ module.exports.createUserService = async (reqData) => {
     let password = reqData.password;
     let confirmPassword = reqData.confirmpassword;
     let attributeList = [];
-    if (password != confirmPassword) {
+    if (password != confirmPassword ) {
         throw "Passwords donot match"
+        
     }
     else {
         attributeList.push(new amazonCognitoIdentity.CognitoUserAttribute({ Name: "email", Value: email }));
